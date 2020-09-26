@@ -240,44 +240,49 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                 if (isChecked == true) {
                     final device_list_DML db=new device_list_DML(context);
                     String url="https://qrphp.000webhostapp.com/new.php";
-                    StringRequest stringRequest=new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if(response.trim().equals("Saved")) {
-                                dialog.dismiss();
-                                Toast.makeText(context, ""+device_name_light.getText().toString().trim()+" On", Toast.LENGTH_SHORT).show();
-                                SharedPreferences.Editor editor = context.getSharedPreferences("" + db.deviceid(device_name_light.getText().toString().trim(), room_name) + device_name_light.getText().toString().trim(), MODE_PRIVATE).edit();
-                                editor.putBoolean("NameOfThingToSave", true);
-                                editor.commit();
+                    boolean server=internetConnection.isServerReachable(context,url);
+                    if(server) {
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                if (response.trim().equals("Saved")) {
+                                    dialog.dismiss();
+                                    Toast.makeText(context, "" + device_name_light.getText().toString().trim() + " On", Toast.LENGTH_SHORT).show();
+                                    SharedPreferences.Editor editor = context.getSharedPreferences("" + db.deviceid(device_name_light.getText().toString().trim(), room_name) + device_name_light.getText().toString().trim(), MODE_PRIVATE).edit();
+                                    editor.putBoolean("NameOfThingToSave", true);
+                                    editor.commit();
+                                } else {
+                                    dialog.dismiss();
+                                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                                    switch_light.setChecked(false);
+                                }
                             }
-                            else {
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
                                 dialog.dismiss();
                                 Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
                                 switch_light.setChecked(false);
                             }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            dialog.dismiss();
-                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
-                            switch_light.setChecked(false);
-                        }
-                    })
-                    {
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            Map<String, String> map = new HashMap<>();
-                            map.put("device_name", device_name_light.getText().toString());
-                            map.put("device_type", "light");
-                            map.put("status","on");
-                            map.put("room_name",room_name);
-                            map.put("device_id",db.deviceid(device_name_light.getText().toString().trim(),room_name));
-                            return map;
-                        }
-                    };
-                    RequestQueue requestQueue= Volley.newRequestQueue(context);
-                    requestQueue.add(stringRequest);
+                        }) {
+                            @Override
+                            protected Map<String, String> getParams() throws AuthFailureError {
+                                Map<String, String> map = new HashMap<>();
+                                map.put("device_name", device_name_light.getText().toString());
+                                map.put("device_type", "light");
+                                map.put("status", "on");
+                                map.put("room_name", room_name);
+                                map.put("device_id", db.deviceid(device_name_light.getText().toString().trim(), room_name));
+                                return map;
+                            }
+                        };
+                        RequestQueue requestQueue = Volley.newRequestQueue(context);
+                        requestQueue.add(stringRequest);
+                    }
+                else {
+                    dialog.dismiss();
+                        Toast.makeText(context, "unable to hit url", Toast.LENGTH_SHORT).show();
+                }
                 }
                 else
                 {
