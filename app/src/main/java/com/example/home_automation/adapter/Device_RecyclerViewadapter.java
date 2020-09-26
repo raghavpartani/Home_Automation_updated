@@ -121,7 +121,7 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                 lightViewHolder.add_data_light(mDeviceName.get(i),mDeviceType.get(i));
                 String light_name=((LightViewHolder) viewHolder).device_name_light.getText().toString().trim();
                 SharedPreferences sharedPref_light = context.getSharedPreferences(""+db.deviceid(light_name,room_name)+light_name, MODE_PRIVATE);
-                ((LightViewHolder) viewHolder).switch_light.setChecked(sharedPref_light.getBoolean("NameOfThingToSave", false));
+                ((LightViewHolder) viewHolder).switch_light.setChecked(sharedPref_light.getBoolean("currentstatus", false));
                 break;
 
             case DEVICE_TYPE_FAN:
@@ -132,7 +132,7 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                 SharedPreferences sharedPref_fan = context.getSharedPreferences(""+db.deviceid(fan_name,room_name)+fan_name, MODE_PRIVATE);
                 SharedPreferences sharedPref_fan_speed =context.getSharedPreferences(""+"" + db.deviceid(fan_name,room_name)+fan_name+"speed", MODE_PRIVATE);
                 ((FanViewHolder) viewHolder).seekBar_fan.setProgress(sharedPref_fan_speed.getInt("speed",0));
-                ((FanViewHolder) viewHolder).switch_fan.setChecked(sharedPref_fan.getBoolean("NameOfThingToSave", false));
+                ((FanViewHolder) viewHolder).switch_fan.setChecked(sharedPref_fan.getBoolean("currentstatus", false));
                 break;
 
             case DEVICE_TYPE_SOCKET:
@@ -141,7 +141,7 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                 socketViewHolder.add_data_socket(mDeviceName.get(i),mDeviceType.get(i));
                 String socket_name=((SocketViewHolder) viewHolder).device_name_socket.getText().toString().trim();
                 SharedPreferences sharedPref_socket = context.getSharedPreferences(""+db.deviceid(socket_name,room_name)+socket_name, MODE_PRIVATE);
-                ((SocketViewHolder) viewHolder).switch_socket.setChecked(sharedPref_socket.getBoolean("NameOfThingToSave", false));
+                ((SocketViewHolder) viewHolder).switch_socket.setChecked(sharedPref_socket.getBoolean("currentstatus", false));
                 break;
 
             case DEVICE_TYPE_COLOR_LIGHT:
@@ -152,8 +152,7 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                 SharedPreferences sharedPref_color_light = context.getSharedPreferences(""+db.deviceid(color_light_name,room_name)+color_light_name, MODE_PRIVATE);
                 SharedPreferences sharedPref_color_light_color = context.getSharedPreferences(""+room_name+color_light_name, MODE_PRIVATE);
                 ((ColorLightViewHolder) viewHolder).colorimage.setColorFilter(sharedPref_color_light_color.getInt("color",0));
-                ((ColorLightViewHolder) viewHolder).switch_color_light.setChecked(sharedPref_color_light.getBoolean("NameOfThingToSave", false));
-
+                ((ColorLightViewHolder) viewHolder).switch_color_light.setChecked(sharedPref_color_light.getBoolean("currentstatus", false));
                 break;
             default:
         }
@@ -230,14 +229,14 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
             final ProgressDialog dialog = new ProgressDialog(context);
             dialog.setMessage("Please wait.....");
             dialog.show();
             InternetConnection internetConnection=new InternetConnection();
             boolean b=internetConnection.checkConnection(context);
             if(b==true) {
-                if (isChecked == true) {
+                //if (isChecked == true) {
                     final device_list_DML db=new device_list_DML(context);
                     String url="https://qrphp.000webhostapp.com/new.php";
                     boolean server=internetConnection.isServerReachable(context,url);
@@ -249,7 +248,14 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                                     dialog.dismiss();
                                     Toast.makeText(context, "" + device_name_light.getText().toString().trim() + " On", Toast.LENGTH_SHORT).show();
                                     SharedPreferences.Editor editor = context.getSharedPreferences("" + db.deviceid(device_name_light.getText().toString().trim(), room_name) + device_name_light.getText().toString().trim(), MODE_PRIVATE).edit();
-                                    editor.putBoolean("NameOfThingToSave", true);
+                                    editor.putBoolean("currentstatus", true);
+                                    editor.commit();
+                                }
+                                else if(response.trim().equals("Deleted")) {
+                                    dialog.dismiss();
+                                    Toast.makeText(context, ""+device_name_light.getText().toString().trim()+" Off", Toast.LENGTH_SHORT).show();
+                                    SharedPreferences.Editor editor = context.getSharedPreferences("" + db.deviceid(device_name_light.getText().toString().trim(), room_name) + device_name_light.getText().toString().trim(), MODE_PRIVATE).edit();
+                                    editor.putBoolean("currentstatus", false);
                                     editor.commit();
                                 } else {
                                     dialog.dismiss();
@@ -270,7 +276,12 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                                 Map<String, String> map = new HashMap<>();
                                 map.put("device_name", device_name_light.getText().toString());
                                 map.put("device_type", "light");
-                                map.put("status", "on");
+                                if(isChecked==true) {
+                                    map.put("status", "on");
+                                }
+                                else {
+                                    map.put("status","off");
+                                }
                                 map.put("room_name", room_name);
                                 map.put("device_id", db.deviceid(device_name_light.getText().toString().trim(), room_name));
                                 return map;
@@ -282,50 +293,6 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                 else {
                     dialog.dismiss();
                         Toast.makeText(context, "unable to hit url", Toast.LENGTH_SHORT).show();
-                }
-                }
-                else
-                {
-                    final device_list_DML db=new device_list_DML(context);
-                    String url="https://qrphp.000webhostapp.com/new.php";
-                    StringRequest stringRequest=new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            dialog.dismiss();
-                            if(response.trim().equals("Deleted")) {
-                                Toast.makeText(context, ""+device_name_light.getText().toString().trim()+" Off", Toast.LENGTH_SHORT).show();
-                                SharedPreferences.Editor editor = context.getSharedPreferences("" + db.deviceid(device_name_light.getText().toString().trim(), room_name) + device_name_light.getText().toString().trim(), MODE_PRIVATE).edit();
-                                editor.putBoolean("NameOfThingToSave", false);
-                                editor.commit();
-                            }
-                            else
-                            {
-                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
-                                switch_light.setChecked(true);
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            dialog.dismiss();
-                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
-                            switch_light.setChecked(true);
-                        }
-                    })
-                    {
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            Map<String, String> map = new HashMap<>();
-                            map.put("device_name", device_name_light.getText().toString());
-                            map.put("device_type", "light");
-                            map.put("status","off");
-                            map.put("room_name",room_name);
-                            map.put("device_id",db.deviceid(device_name_light.getText().toString().trim(),room_name));
-                            return map;
-                        }
-                    };
-                    RequestQueue requestQueue= Volley.newRequestQueue(context);
-                    requestQueue.add(stringRequest);
                 }
             }
             else {
@@ -431,7 +398,7 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                                 dialog.dismiss();
                                 Toast.makeText(context, ""+device_name_color_light.getText().toString().trim()+" On", Toast.LENGTH_SHORT).show();
                                 SharedPreferences.Editor editor = context.getSharedPreferences("" + db.deviceid(device_name_color_light.getText().toString().trim(), room_name) + device_name_color_light.getText().toString().trim(), MODE_PRIVATE).edit();
-                                editor.putBoolean("NameOfThingToSave", true);
+                                editor.putBoolean("currentstatus", true);
                                 editor.commit();
                             }
                             else {
@@ -476,7 +443,7 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                             if(response.trim().equals("Deleted")) {
                                 Toast.makeText(context, ""+device_name_color_light.getText().toString().trim()+" Off", Toast.LENGTH_SHORT).show();
                                 SharedPreferences.Editor editor = context.getSharedPreferences("" + db.deviceid(device_name_color_light.getText().toString().trim(), room_name) + device_name_color_light.getText().toString().trim(), MODE_PRIVATE).edit();
-                                editor.putBoolean("NameOfThingToSave", false);
+                                editor.putBoolean("currentstatus", false);
                                 editor.commit();
                             }
                             else
@@ -580,7 +547,7 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                                 dialog.dismiss();
                                 Toast.makeText(context, "" + device_name_socket.getText().toString().trim() + " On", Toast.LENGTH_SHORT).show();
                                 SharedPreferences.Editor editor = context.getSharedPreferences("" + db.deviceid(device_name_socket.getText().toString().trim(), room_name) + device_name_socket.getText().toString().trim(), MODE_PRIVATE).edit();
-                                editor.putBoolean("NameOfThingToSave", true);
+                                editor.putBoolean("currentstatus", true);
                                 editor.commit();
                             }
                             else {
@@ -623,7 +590,7 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                                 dialog.dismiss();
                                 Toast.makeText(context, "" + device_name_socket.getText().toString().trim() + " Off", Toast.LENGTH_SHORT).show();
                                 SharedPreferences.Editor editor = context.getSharedPreferences("" + db.deviceid(device_name_socket.getText().toString().trim(), room_name) + device_name_socket.getText().toString().trim(), MODE_PRIVATE).edit();
-                                editor.putBoolean("NameOfThingToSave", false);
+                                editor.putBoolean("currentstatus", false);
                                 editor.commit();
                             }
                             else {
@@ -792,7 +759,7 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                                 dialog.dismiss();
                                 Toast.makeText(context, device_name_fan.getText().toString().trim()+" on", Toast.LENGTH_SHORT).show();
                                 SharedPreferences.Editor editor = context.getSharedPreferences("" + db.deviceid(device_name_fan.getText().toString().trim(), room_name) + device_name_fan.getText().toString().trim(), MODE_PRIVATE).edit();
-                                editor.putBoolean("NameOfThingToSave", true);
+                                editor.putBoolean("currentstatus", true);
                                 editor.commit();
                             }
                             else {
@@ -835,7 +802,7 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                                 dialog.dismiss();
                                 Toast.makeText(context, ""+device_name_fan.getText().toString().trim() + " Off", Toast.LENGTH_SHORT).show();
                                 SharedPreferences.Editor editor = context.getSharedPreferences("" + db.deviceid(device_name_fan.getText().toString().trim(), room_name) + device_name_fan.getText().toString().trim(), MODE_PRIVATE).edit();
-                                editor.putBoolean("NameOfThingToSave", false);
+                                editor.putBoolean("currentstatus", false);
                                 editor.commit();
                             }
                             else{
