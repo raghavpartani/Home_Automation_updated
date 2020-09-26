@@ -17,8 +17,9 @@
 
             <ImageView
                 android:id="@+id/color"
+                android:layout_marginTop="10dp"
                 android:layout_width="100dp"
-                android:layout_height="90dp"
+                android:layout_height="70dp"
                 android:foregroundGravity="center"
                 android:src="@drawable/color"/>
             <TextView

@@ -146,6 +146,7 @@ public class Device extends AppCompatActivity implements View.OnClickListener {
                             arrayList_device_name.add(device_name.getText().toString().trim());
                             arrayList_device_type.add(devicetype1.trim());
                             dialog.dismiss();
+                            adapter.notifyDataSetChanged();
                         } else
                             Toast.makeText(Device.this, "Not a valid ip address", Toast.LENGTH_SHORT).show();
                     }
