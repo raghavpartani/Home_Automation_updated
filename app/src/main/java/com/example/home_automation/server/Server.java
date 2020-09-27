@@ -22,7 +22,7 @@ import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class Server  {
+public class Server {
     public void volleytoggle(final Context context, final String room_name, final boolean isChecked, final String device_name, final String device_type) {
         String url="https://qrphp.000webhostapp.com/new.php";
         final device_list_DML db=new device_list_DML(context);
@@ -36,7 +36,6 @@ public class Server  {
                 try {
                     JSONObject responses=new JSONObject(response);
                     String key=responses.getString("key");
-
                 if(key.trim().equals("Saved")) {
                     dialog.dismiss();
                     Toast.makeText(context, ""+device_name+" On", Toast.LENGTH_SHORT).show();
@@ -54,7 +53,6 @@ public class Server  {
                 else {
                     dialog.dismiss();
                     Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
-
                 }
              } catch (JSONException e) {
                 e.printStackTrace();

@@ -269,7 +269,7 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                    SharedPreferences.Editor editor = context.getSharedPreferences(""+room_name+device_name_color_light.getText().toString().trim(), MODE_PRIVATE).edit();
                    editor.putInt("color",mDefaultColor);
                    editor.commit();
-                   Toast.makeText(context, ""+mDefaultColor, Toast.LENGTH_SHORT).show();
+                   //Toast.makeText(context, ""+mDefaultColor, Toast.LENGTH_SHORT).show();
                }
            });
            colorPicker.show();
