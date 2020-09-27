@@ -1,7 +1,6 @@
 package com.example.home_automation.adapter;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +25,6 @@ import com.example.home_automation.server.Server;
 import java.util.ArrayList;
 
 import yuku.ambilwarna.AmbilWarnaDialog;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -106,8 +103,6 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                 LightViewHolder lightViewHolder =(LightViewHolder) viewHolder;
                 lightViewHolder.add_data_light(mDeviceName.get(i),mDeviceType.get(i));
                 String light_name=((LightViewHolder) viewHolder).device_name_light.getText().toString().trim();
-                SharedPreferences sharedPref_light = context.getSharedPreferences(""+db.deviceid(light_name,room_name)+light_name, MODE_PRIVATE);
-                ((LightViewHolder) viewHolder).switch_light.setChecked(sharedPref_light.getBoolean("currentstatus", false));
                 break;
 
             case DEVICE_TYPE_FAN:
@@ -115,10 +110,6 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                 FanViewHolder fanViewHolder = (FanViewHolder) viewHolder;
                 fanViewHolder.add_data_fan(mDeviceName.get(i),mDeviceType.get(i));
                 String fan_name=((FanViewHolder) viewHolder).device_name_fan.getText().toString().trim();
-                SharedPreferences sharedPref_fan = context.getSharedPreferences(""+db.deviceid(fan_name,room_name)+fan_name, MODE_PRIVATE);
-                SharedPreferences sharedPref_fan_speed =context.getSharedPreferences(""+"" + db.deviceid(fan_name,room_name)+fan_name+"speed", MODE_PRIVATE);
-                ((FanViewHolder) viewHolder).seekBar_fan.setProgress(sharedPref_fan_speed.getInt("speed",0));
-                ((FanViewHolder) viewHolder).switch_fan.setChecked(sharedPref_fan.getBoolean("currentstatus", false));
                 break;
 
             case DEVICE_TYPE_SOCKET:
@@ -126,8 +117,6 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                 SocketViewHolder socketViewHolder = (SocketViewHolder) viewHolder;
                 socketViewHolder.add_data_socket(mDeviceName.get(i),mDeviceType.get(i));
                 String socket_name=((SocketViewHolder) viewHolder).device_name_socket.getText().toString().trim();
-                SharedPreferences sharedPref_socket = context.getSharedPreferences(""+db.deviceid(socket_name,room_name)+socket_name, MODE_PRIVATE);
-                ((SocketViewHolder) viewHolder).switch_socket.setChecked(sharedPref_socket.getBoolean("currentstatus", false));
                 break;
 
             case DEVICE_TYPE_COLOR_LIGHT:
@@ -135,10 +124,6 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                 ColorLightViewHolder colorlightViewHolder =(ColorLightViewHolder) viewHolder;
                 colorlightViewHolder.add_data_color_light(mDeviceName.get(i),mDeviceType.get(i));
                 String color_light_name=((ColorLightViewHolder) viewHolder).device_name_color_light.getText().toString().trim();
-                SharedPreferences sharedPref_color_light = context.getSharedPreferences(""+db.deviceid(color_light_name,room_name)+color_light_name, MODE_PRIVATE);
-                SharedPreferences sharedPref_color_light_color = context.getSharedPreferences(""+room_name+color_light_name, MODE_PRIVATE);
-                ((ColorLightViewHolder) viewHolder).colorimage.setColorFilter(sharedPref_color_light_color.getInt("color",0));
-                ((ColorLightViewHolder) viewHolder).switch_color_light.setChecked(sharedPref_color_light.getBoolean("currentstatus", false));
                 break;
             default:
         }
@@ -266,10 +251,6 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                public void onOk(AmbilWarnaDialog dialog, int color) {
                    mDefaultColor = color;
                    colorimage.setColorFilter(mDefaultColor);
-                   SharedPreferences.Editor editor = context.getSharedPreferences(""+room_name+device_name_color_light.getText().toString().trim(), MODE_PRIVATE).edit();
-                   editor.putInt("color",mDefaultColor);
-                   editor.commit();
-                   //Toast.makeText(context, ""+mDefaultColor, Toast.LENGTH_SHORT).show();
                }
            });
            colorPicker.show();
@@ -412,8 +393,6 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                     }
                     else {
                         Toast.makeText(context, "check internet connection", Toast.LENGTH_SHORT).show();
-                        SharedPreferences sharedPref_fan_speed =context.getSharedPreferences(""+ db.deviceid(device_name_fan.getText().toString().trim(), room_name) + device_name_fan.getText().toString().trim()+"speed", MODE_PRIVATE);
-                        seekBar_fan.setProgress(sharedPref_fan_speed.getInt("speed",0));
                     }
                 }
 
