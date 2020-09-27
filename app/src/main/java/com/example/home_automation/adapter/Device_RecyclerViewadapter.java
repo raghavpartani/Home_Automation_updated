@@ -1,6 +1,5 @@
 package com.example.home_automation.adapter;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -31,6 +30,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.home_automation.Device;
 import com.example.home_automation.R;
 import com.example.home_automation.database.device_list_DML;
+import com.example.home_automation.server.Server;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -230,73 +230,13 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-            final ProgressDialog dialog = new ProgressDialog(context);
-            dialog.setMessage("Please wait.....");
-            dialog.show();
             InternetConnection internetConnection=new InternetConnection();
             boolean b=internetConnection.checkConnection(context);
             if(b==true) {
-                //if (isChecked == true) {
-                    final device_list_DML db=new device_list_DML(context);
-                    String url="https://qrphp.000webhostapp.com/new.php";
-                    boolean server=internetConnection.isServerReachable(context,url);
-                    if(server) {
-                        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                if (response.trim().equals("Saved")) {
-                                    dialog.dismiss();
-                                    Toast.makeText(context, "" + device_name_light.getText().toString().trim() + " On", Toast.LENGTH_SHORT).show();
-                                    SharedPreferences.Editor editor = context.getSharedPreferences("" + db.deviceid(device_name_light.getText().toString().trim(), room_name) + device_name_light.getText().toString().trim(), MODE_PRIVATE).edit();
-                                    editor.putBoolean("currentstatus", true);
-                                    editor.commit();
-                                }
-                                else if(response.trim().equals("Deleted")) {
-                                    dialog.dismiss();
-                                    Toast.makeText(context, ""+device_name_light.getText().toString().trim()+" Off", Toast.LENGTH_SHORT).show();
-                                    SharedPreferences.Editor editor = context.getSharedPreferences("" + db.deviceid(device_name_light.getText().toString().trim(), room_name) + device_name_light.getText().toString().trim(), MODE_PRIVATE).edit();
-                                    editor.putBoolean("currentstatus", false);
-                                    editor.commit();
-                                } else {
-                                    dialog.dismiss();
-                                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
-                                    switch_light.setChecked(false);
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                dialog.dismiss();
-                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
-                                switch_light.setChecked(false);
-                            }
-                        }) {
-                            @Override
-                            protected Map<String, String> getParams() throws AuthFailureError {
-                                Map<String, String> map = new HashMap<>();
-                                map.put("device_name", device_name_light.getText().toString());
-                                map.put("device_type", "light");
-                                if(isChecked==true) {
-                                    map.put("status", "on");
-                                }
-                                else {
-                                    map.put("status","off");
-                                }
-                                map.put("room_name", room_name);
-                                map.put("device_id", db.deviceid(device_name_light.getText().toString().trim(), room_name));
-                                return map;
-                            }
-                        };
-                        RequestQueue requestQueue = Volley.newRequestQueue(context);
-                        requestQueue.add(stringRequest);
-                    }
-                else {
-                    dialog.dismiss();
-                        Toast.makeText(context, "unable to hit url", Toast.LENGTH_SHORT).show();
-                }
+                Server volley=new Server();
+                volley.volley(context,room_name,isChecked,device_name_light.getText().toString().trim(),device_type_light.getText().toString().trim());
             }
             else {
-                dialog.dismiss();
                 Toast.makeText(context, "check internet connection", Toast.LENGTH_SHORT).show();
                 if(isChecked == true)
                 {
@@ -382,70 +322,13 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-            final ProgressDialog dialog = new ProgressDialog(context);
-            dialog.setMessage("Please wait.....");
-            dialog.show();
             InternetConnection internetConnection=new InternetConnection();
             boolean b=internetConnection.checkConnection(context);
             if(b==true) {
-                    final device_list_DML db=new device_list_DML(context);
-                    String url="https://qrphp.000webhostapp.com/new.php";
-                    StringRequest stringRequest=new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            dialog.dismiss();
-                            if(response.trim().equals("Saved")) {
-                                dialog.dismiss();
-                                Toast.makeText(context, ""+device_name_color_light.getText().toString().trim()+" On", Toast.LENGTH_SHORT).show();
-                                SharedPreferences.Editor editor = context.getSharedPreferences("" + db.deviceid(device_name_color_light.getText().toString().trim(), room_name) + device_name_color_light.getText().toString().trim(), MODE_PRIVATE).edit();
-                                editor.putBoolean("currentstatus", true);
-                                editor.commit();
-                            }
-                            else if(response.trim().equals("Deleted")) {
-
-                                Toast.makeText(context, ""+device_name_color_light.getText().toString().trim()+" Off", Toast.LENGTH_SHORT).show();
-                                SharedPreferences.Editor editor = context.getSharedPreferences("" + db.deviceid(device_name_color_light.getText().toString().trim(), room_name) + device_name_color_light.getText().toString().trim(), MODE_PRIVATE).edit();
-                                editor.putBoolean("currentstatus", false);
-                                editor.commit();
-                            }
-                            else {
-                                dialog.dismiss();
-                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
-                                switch_color_light.setChecked(false);
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            dialog.dismiss();
-                            Toast.makeText(context, "Something went wrong"+error, Toast.LENGTH_SHORT).show();
-                            switch_color_light.setChecked(false);
-                        }
-                    })
-                    {
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            Map<String, String> map = new HashMap<>();
-                            map.put("device_name", device_name_color_light.getText().toString());
-                            map.put("device_type", "colorlight");
-                            if(isChecked==true) {
-                                map.put("status", "on");
-                            }
-                            else {
-                                map.put("status","off");
-                            }
-                            map.put("room_name",room_name);
-                            map.put("device_id",db.deviceid(device_name_color_light.getText().toString().trim(),room_name));
-                            SharedPreferences sharedPref_color_light_color = context.getSharedPreferences(""+room_name+device_name_color_light.getText().toString().trim(), MODE_PRIVATE);
-                            map.put("color", String.valueOf(sharedPref_color_light_color.getInt("color",12115972)));
-                            return map;
-                        }
-                    };
-                    RequestQueue requestQueue= Volley.newRequestQueue(context);
-                    requestQueue.add(stringRequest);
-                }
+                Server volley=new Server();
+                volley.volley(context,room_name,isChecked,device_name_color_light.getText().toString().trim(),device_type_color_light.getText().toString().trim());
+            }
             else {
-                dialog.dismiss();
                 Toast.makeText(context, "check internet connection", Toast.LENGTH_SHORT).show();
                 if(isChecked == true)
                 {
@@ -499,65 +382,13 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-            final device_list_DML db=new device_list_DML(context);
-            final ProgressDialog dialog = new ProgressDialog(context);
-            dialog.setMessage("Please wait.....");
-            dialog.show();
             final InternetConnection internetConnection=new InternetConnection();
             boolean b=internetConnection.checkConnection(context);
             if(b==true) {
-                    String url="https://qrphp.000webhostapp.com/new.php";
-                    StringRequest stringRequest=new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if(response.trim().equals("Saved")) {
-                                dialog.dismiss();
-                                Toast.makeText(context, "" + device_name_socket.getText().toString().trim() + " On", Toast.LENGTH_SHORT).show();
-                                SharedPreferences.Editor editor = context.getSharedPreferences("" + db.deviceid(device_name_socket.getText().toString().trim(), room_name) + device_name_socket.getText().toString().trim(), MODE_PRIVATE).edit();
-                                editor.putBoolean("currentstatus", true);
-                                editor.commit();
-                            }
-                            else if(response.trim().equals("Deleted")) {
-                                dialog.dismiss();
-                                Toast.makeText(context, "" + device_name_socket.getText().toString().trim() + " Off", Toast.LENGTH_SHORT).show();
-                                SharedPreferences.Editor editor = context.getSharedPreferences("" + db.deviceid(device_name_socket.getText().toString().trim(), room_name) + device_name_socket.getText().toString().trim(), MODE_PRIVATE).edit();
-                                editor.putBoolean("currentstatus", false);
-                                editor.commit();
-                            }
-                            else {
-                                dialog.dismiss();
-                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
-                                switch_socket.setChecked(false);
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            dialog.dismiss();
-                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
-                            switch_socket.setChecked(false);
-                        }
-                    })
-                    {
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            Map<String, String> map = new HashMap<>();
-                            map.put("device_name", device_name_socket.getText().toString());
-                            map.put("device_type", "socket");
-                            if(isChecked)
-                                map.put("status","on");
-                            else
-                                map.put("status","off");
-                            map.put("room_name",room_name);
-                            map.put("device_id",db.deviceid(device_name_socket.getText().toString().trim(),room_name));
-                            return map;
-                        }
-                    };
-                    RequestQueue requestQueue= Volley.newRequestQueue(context);
-                    requestQueue.add(stringRequest);
+                Server volley=new Server();
+                volley.volley(context,room_name,isChecked,device_name_socket.getText().toString().trim(),device_type_socket.getText().toString().trim());
                 }
             else {
-                dialog.dismiss();
                 Toast.makeText(context, "check internet connection", Toast.LENGTH_SHORT).show();
                 if(isChecked == true)
                 {
@@ -673,65 +504,13 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-            final ProgressDialog dialog = new ProgressDialog(context);
-            dialog.setMessage("Please wait.....");
-            dialog.show();
             InternetConnection internetConnection=new InternetConnection();
             boolean b=internetConnection.checkConnection(context);
             if(b==true) {
-                    final device_list_DML db=new device_list_DML(context);
-                    String url="https://qrphp.000webhostapp.com/new.php";
-                    StringRequest stringRequest=new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if(response.trim().equals("Saved")){
-                                dialog.dismiss();
-                                Toast.makeText(context, device_name_fan.getText().toString().trim()+" on", Toast.LENGTH_SHORT).show();
-                                SharedPreferences.Editor editor = context.getSharedPreferences("" + db.deviceid(device_name_fan.getText().toString().trim(), room_name) + device_name_fan.getText().toString().trim(), MODE_PRIVATE).edit();
-                                editor.putBoolean("currentstatus", true);
-                                editor.commit();
-                            }
-                            else if(response.trim().equals("Deleted")) {
-                                dialog.dismiss();
-                                Toast.makeText(context, ""+device_name_fan.getText().toString().trim() + " Off", Toast.LENGTH_SHORT).show();
-                                SharedPreferences.Editor editor = context.getSharedPreferences("" + db.deviceid(device_name_fan.getText().toString().trim(), room_name) + device_name_fan.getText().toString().trim(), MODE_PRIVATE).edit();
-                                editor.putBoolean("currentstatus", false);
-                                editor.commit();
-                            }
-                            else {
-                                dialog.dismiss();
-                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
-                                switch_fan.setChecked(false);
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            dialog.dismiss();
-                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
-                            switch_fan.setChecked(false);
-                        }
-                    })
-                    {
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            Map<String, String> map = new HashMap<>();
-                            map.put("device_name", device_name_fan.getText().toString());
-                            map.put("device_type", "fan");
-                            if(isChecked)
-                            map.put("status","on");
-                            else
-                            map.put("status","off")  ;
-                            map.put("room_name",room_name);
-                            map.put("device_id",db.deviceid(device_name_fan.getText().toString().trim(),room_name));
-                            return map;
-                        }
-                    };
-                    RequestQueue requestQueue= Volley.newRequestQueue(context);
-                    requestQueue.add(stringRequest);
-                }
+                Server volley=new Server();
+                volley.volley(context,room_name,isChecked,device_name_fan.getText().toString().trim(),device_type_fan.getText().toString().trim());
+            }
             else {
-                dialog.dismiss();
                 Toast.makeText(context, "check internet connection", Toast.LENGTH_SHORT).show();
                 if(isChecked == true)
                 {

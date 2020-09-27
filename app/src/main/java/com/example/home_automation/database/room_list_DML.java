@@ -8,8 +8,6 @@ import android.database.sqlite.SQLiteException;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.home_automation.database.Database_sqlite;
-
 import java.util.ArrayList;
 
 public class room_list_DML extends Database_sqlite {
@@ -38,9 +36,7 @@ public class room_list_DML extends Database_sqlite {
             contentvalues.put(COL1, Roomname);
             Long result = sqLiteDatabase.insert(TABLE_NAME, "Blank", contentvalues);
             Toast.makeText(mContext, "New Room added :"+Roomname, Toast.LENGTH_SHORT).show();
-            sqLiteDatabase.close();
         } catch (Exception e) {
-            sqLiteDatabase.close();
             Log.d(TAG, "save_room_name: "+e.getMessage());
         }
     }
@@ -57,12 +53,10 @@ public class room_list_DML extends Database_sqlite {
                 mRoom.add(viewdata);
             }
             cursor.close();
-            sqLiteDatabase.close();
             return mRoom;
         } else {
             Toast.makeText(mContext, "No Rooms found add new rooms", Toast.LENGTH_SHORT).show();
             cursor.close();
-            sqLiteDatabase.close();
             return mRoom;
         }
     }
@@ -72,10 +66,8 @@ public class room_list_DML extends Database_sqlite {
             String[] arg = new String[] {Roomname};
             sqLiteDatabase.delete(FIRST_TABLE_NAME, COL1 + "=?" ,arg);
             Toast.makeText(mContext, "Deleted "+Roomname, Toast.LENGTH_SHORT).show();
-            sqLiteDatabase.close();
         } catch (Exception e) {
             Log.d(TAG, "delete_room_name: "+e.getMessage());
-            sqLiteDatabase.close();
         }
     }
     public  boolean update_room_name(String old_Roomname, String new_Roomname) {
@@ -87,10 +79,8 @@ public class room_list_DML extends Database_sqlite {
             String[] args = new String[]{old_Roomname};
             sqLiteDatabase.update(TABLE_NAME, contentvalues, COL1 + "=?", args);
             Toast.makeText(mContext, "Room updated to "+new_Roomname, Toast.LENGTH_SHORT).show();
-            sqLiteDatabase.close();
             return true;
         } catch (SQLiteException e) {
-            sqLiteDatabase.close();
 
             return false;
         }

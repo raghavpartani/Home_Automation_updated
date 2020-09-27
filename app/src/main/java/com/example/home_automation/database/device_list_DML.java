@@ -8,8 +8,6 @@ import android.database.sqlite.SQLiteException;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.home_automation.database.Database_sqlite;
-
 import java.util.ArrayList;
 
 public class device_list_DML extends Database_sqlite {
@@ -28,8 +26,6 @@ public class device_list_DML extends Database_sqlite {
     private ArrayList<String> mDeviceName = new ArrayList();
     private ArrayList<String> mDeviceType = new ArrayList();
 
-    private ArrayList<String> mDeviceID = new ArrayList();
-    private ArrayList<String> mDeviceIp = new ArrayList();
 
     private Context mContext;
     private SQLiteDatabase sqLiteDatabase;
@@ -56,10 +52,10 @@ public class device_list_DML extends Database_sqlite {
             Toast.makeText(mContext, "New Device added :" + RoomName
                             + "\nDevice: " + DeviceName + "\nType: " + DeviceType,
                     Toast.LENGTH_SHORT).show();
-            sqLiteDatabase.close();
+
         } catch (Exception e) {
             Log.d(TAG, "save_room_name: " + e.getMessage());
-            sqLiteDatabase.close();
+
         }
     }
 
@@ -77,12 +73,12 @@ public class device_list_DML extends Database_sqlite {
                 Log.d(TAG, "view_DeviceName: mDeviceName "+mDeviceName);
             }
             cursor.close();
-            sqLiteDatabase.close();
+
             return mDeviceName;
         } else {
             Toast.makeText(mContext, "No Devices found add new devices", Toast.LENGTH_SHORT).show();
             cursor.close();
-            sqLiteDatabase.close();
+
             return mDeviceName;
         }
     }
@@ -99,60 +95,14 @@ public class device_list_DML extends Database_sqlite {
                 Log.d(TAG, "view_DeviceType: mDeviceType "+mDeviceType);
             }
             cursor.close();
-            sqLiteDatabase.close();
+
             return mDeviceType;
         } else {
 //            Toast.makeText(mContext, "No Devices found add new devices", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "view_DeviceType: No Devices TYPE found add new devices");
             cursor.close();
-            sqLiteDatabase.close();
+
             return mDeviceType;
-        }
-    }
-    public ArrayList<String> view_Device_Ip(String RoomName) {
-        Log.d(TAG, "view_DeviceIp is called");
-        sqLiteDatabase = database.getReadableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery(" select * from " + TABLE_NAME
-                + " where " + COL1 + " like '"+ RoomName +"' ;", null);
-        if (cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-
-                String viewdata_device_ip = cursor.getString(cursor.getColumnIndex(COL5));
-                mDeviceIp.add(viewdata_device_ip);
-                Log.d(TAG, "view_DeviceIp: mDeviceIp "+mDeviceIp);
-            }
-            cursor.close();
-            sqLiteDatabase.close();
-            return mDeviceIp;
-        } else {
-//            Toast.makeText(mContext, "No Devices found add new devices", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "view_DeviceType: No Devices TYPE found add new devices");
-            cursor.close();
-            sqLiteDatabase.close();
-            return mDeviceIp;
-        }
-    }
-
-    public ArrayList<String> view_DeviceID(String RoomName) {
-
-        Log.d(TAG, "view_DeviceName is called");
-        sqLiteDatabase = database.getReadableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery(" select * from " + TABLE_NAME
-                + " where " + COL1 + " like '" +RoomName+ "' ;", null);
-        if (cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                String viewdata_device_id = cursor.getString(cursor.getColumnIndex(COL4));
-                mDeviceID.add(viewdata_device_id);
-                Log.d(TAG, "view_DeviceName: mDeviceName "+mDeviceName);
-            }
-            cursor.close();
-            sqLiteDatabase.close();
-            return mDeviceID;
-        } else {
-            Toast.makeText(mContext, "No Devices found add new devices", Toast.LENGTH_SHORT).show();
-            cursor.close();
-            sqLiteDatabase.close();
-            return mDeviceID;
         }
     }
 
@@ -161,8 +111,7 @@ public class device_list_DML extends Database_sqlite {
         String[] arg = new String[]{DeviceName,RoomName};
         sqLiteDatabase.delete(TABLE_NAME, COL2 + "=? AND "+COL1+"=?", arg);
         Toast.makeText(mContext, "Deleted " + DeviceName, Toast.LENGTH_SHORT).show();
-        sqLiteDatabase.close();
-    }
+        }
 
     public boolean update_device(String old_DeviceName, String new_DeviceName, String new_DeviceType,String new_IpAddress,String new_DeviceId,String RoomName) {
 
@@ -176,11 +125,9 @@ public class device_list_DML extends Database_sqlite {
             sqLiteDatabase.update(TABLE_NAME, contentvalues, COL2 + " = ? AND "+COL1 +" = ?", args);
             Toast.makeText(mContext, "Device updated to " + new_DeviceName + "\n Type: " + new_DeviceType,
                     Toast.LENGTH_SHORT).show();
-            sqLiteDatabase.close();
             return true;
         }
         catch (SQLiteException e) {
-            sqLiteDatabase.close();
             return false;
         }
     }
@@ -192,10 +139,8 @@ public class device_list_DML extends Database_sqlite {
             String[] args = new String[]{old_Roomname};
             sqLiteDatabase.update(TABLE_NAME, contentvalues, COL1 + "=?", args);
             Toast.makeText(mContext, "Room updated to "+new_Roomname, Toast.LENGTH_SHORT).show();
-            sqLiteDatabase.close();
             return true;
         } catch (SQLiteException e) {
-            sqLiteDatabase.close();
             return false;
         }
     }
@@ -205,8 +150,7 @@ public class device_list_DML extends Database_sqlite {
         String[] arg = new String[]{room};
         sqLiteDatabase.delete(TABLE_NAME, COL1 + "=?", arg);
         Toast.makeText(mContext, "Deleted " + room, Toast.LENGTH_SHORT).show();
-        sqLiteDatabase.close();
-    }
+        }
 
     public String deviceip(String devicename,String roomname)
     {
@@ -219,12 +163,10 @@ public class device_list_DML extends Database_sqlite {
                 viewdata_device_ip= cursor.getString(cursor.getColumnIndex(COL5));
                 }
             cursor.close();
-            sqLiteDatabase.close();
             return viewdata_device_ip;
         } else {
             Toast.makeText(mContext, "No ip address found", Toast.LENGTH_SHORT).show();
             cursor.close();
-            sqLiteDatabase.close();
             return null;
         }
     }
@@ -240,12 +182,10 @@ public class device_list_DML extends Database_sqlite {
                 viewdata_device_id= cursor.getString(cursor.getColumnIndex(COL4));
             }
             cursor.close();
-            sqLiteDatabase.close();
             return viewdata_device_id;
         } else {
             Toast.makeText(mContext, "No Device Id found", Toast.LENGTH_SHORT).show();
             cursor.close();
-            sqLiteDatabase.close();
             return null;
         }
     }
