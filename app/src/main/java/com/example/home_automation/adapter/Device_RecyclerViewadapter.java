@@ -2,9 +2,6 @@ package com.example.home_automation.adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,12 +27,9 @@ import com.android.volley.toolbox.Volley;
 import com.example.home_automation.Device;
 import com.example.home_automation.R;
 import com.example.home_automation.database.device_list_DML;
+import com.example.home_automation.internetchck.InternetConnection;
 import com.example.home_automation.server.Server;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -234,7 +228,7 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
             boolean b=internetConnection.checkConnection(context);
             if(b==true) {
                 Server volley=new Server();
-                volley.volley(context,room_name,isChecked,device_name_light.getText().toString().trim(),device_type_light.getText().toString().trim());
+                volley.volleytoggle(context,room_name,isChecked,device_name_light.getText().toString().trim(),device_type_light.getText().toString().trim());
             }
             else {
                 Toast.makeText(context, "check internet connection", Toast.LENGTH_SHORT).show();
@@ -326,7 +320,7 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
             boolean b=internetConnection.checkConnection(context);
             if(b==true) {
                 Server volley=new Server();
-                volley.volley(context,room_name,isChecked,device_name_color_light.getText().toString().trim(),device_type_color_light.getText().toString().trim());
+                volley.volleytoggle(context,room_name,isChecked,device_name_color_light.getText().toString().trim(),device_type_color_light.getText().toString().trim());
             }
             else {
                 Toast.makeText(context, "check internet connection", Toast.LENGTH_SHORT).show();
@@ -339,7 +333,6 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                     switch_color_light.setChecked(true);
                 }
             }
-
         }
     }
 
@@ -386,7 +379,7 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
             boolean b=internetConnection.checkConnection(context);
             if(b==true) {
                 Server volley=new Server();
-                volley.volley(context,room_name,isChecked,device_name_socket.getText().toString().trim(),device_type_socket.getText().toString().trim());
+                volley.volleytoggle(context,room_name,isChecked,device_name_socket.getText().toString().trim(),device_type_socket.getText().toString().trim());
                 }
             else {
                 Toast.makeText(context, "check internet connection", Toast.LENGTH_SHORT).show();
@@ -508,7 +501,7 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
             boolean b=internetConnection.checkConnection(context);
             if(b==true) {
                 Server volley=new Server();
-                volley.volley(context,room_name,isChecked,device_name_fan.getText().toString().trim(),device_type_fan.getText().toString().trim());
+                volley.volleytoggle(context,room_name,isChecked,device_name_fan.getText().toString().trim(),device_type_fan.getText().toString().trim());
             }
             else {
                 Toast.makeText(context, "check internet connection", Toast.LENGTH_SHORT).show();
@@ -521,63 +514,6 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                     switch_fan.setChecked(true);
                 }
             }
-        }
-    }
-}
-
-
-
-
-class InternetConnection {
-
-    /**
-     * CHECK WHETHER INTERNET CONNECTION IS AVAILABLE OR NOT
-     */
-    public boolean checkConnection(Context context) {
-        final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetworkInfo = connMgr.getActiveNetworkInfo();
-
-        if (activeNetworkInfo != null) { // connected to the internet
-            //Toast.makeText(context, activeNetworkInfo.getTypeName(), Toast.LENGTH_SHORT).show();
-
-            if (activeNetworkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
-                // connected to wifi
-                return true;
-            } else if (activeNetworkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
-                // connected to the mobile provider's data plan
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isServerReachable(Context context, String url) {
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                    .permitAll().build();
-
-            StrictMode.setThreadPolicy(policy);
-        }
-        try {
-            URL diachi = new URL(url);
-            HttpURLConnection huc = (HttpURLConnection) diachi.openConnection();
-            huc.setRequestMethod("HEAD");
-            int responseCode = huc.getResponseCode();
-
-            if (responseCode != 404) {
-                //URL Exist
-
-                return true;
-            } else {
-                return false;
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return false;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
         }
     }
 }

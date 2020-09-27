@@ -18,8 +18,6 @@ public class device_list_DML extends Database_sqlite {
     private static final String COL1 = "room_name_ofdevice";
     private static final String COL2 = "device_name";
     private static final String COL3 = "device_type";
-
-
     private static final String COL4 = "device_id";
     private static final String COL5 = "ip_address";
 
