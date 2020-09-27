@@ -17,13 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.home_automation.Device;
 import com.example.home_automation.R;
 import com.example.home_automation.database.device_list_DML;
@@ -31,8 +24,6 @@ import com.example.home_automation.internetchck.InternetConnection;
 import com.example.home_automation.server.Server;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import yuku.ambilwarna.AmbilWarnaDialog;
 
@@ -51,6 +42,7 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
     private OnRecyclerViewListner mOnRecyclerViewListner;
     Context context;
     String room_name;
+    Server volley=new Server();
 
     public Device_RecyclerViewadapter(ArrayList<String> devicename , ArrayList<String> devicetype, Context context,String room_name){
         this.mDeviceName = devicename;
@@ -227,7 +219,6 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
             InternetConnection internetConnection=new InternetConnection();
             boolean b=internetConnection.checkConnection(context);
             if(b==true) {
-                Server volley=new Server();
                 volley.volleytoggle(context,room_name,isChecked,device_name_light.getText().toString().trim(),device_type_light.getText().toString().trim());
             }
             else {
@@ -319,7 +310,6 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
             InternetConnection internetConnection=new InternetConnection();
             boolean b=internetConnection.checkConnection(context);
             if(b==true) {
-                Server volley=new Server();
                 volley.volleytoggle(context,room_name,isChecked,device_name_color_light.getText().toString().trim(),device_type_color_light.getText().toString().trim());
             }
             else {
@@ -378,7 +368,6 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
             final InternetConnection internetConnection=new InternetConnection();
             boolean b=internetConnection.checkConnection(context);
             if(b==true) {
-                Server volley=new Server();
                 volley.volleytoggle(context,room_name,isChecked,device_name_socket.getText().toString().trim(),device_type_socket.getText().toString().trim());
                 }
             else {
@@ -419,40 +408,7 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                     InternetConnection internetConnection=new InternetConnection();
                     boolean b=internetConnection.checkConnection(context);
                     if(b) {
-                        if (switch_fan.isChecked()) {
-                            String url="https://qrphp.000webhostapp.com/new.php";
-                            StringRequest stringRequest=new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    Toast.makeText(context, "Fan Speed is "+seekBar_fan.getProgress(), Toast.LENGTH_SHORT).show();
-                                    int x = seekBar.getProgress();
-                                    SharedPreferences.Editor editor = context.getSharedPreferences("" + db.deviceid(device_name_fan.getText().toString().trim(), room_name) + device_name_fan.getText().toString().trim()+"speed", MODE_PRIVATE).edit();
-                                    editor.putInt("speed", x);
-                                    editor.commit();
-                                }
-                            }, new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    SharedPreferences sharedPref_fan_speed =context.getSharedPreferences(""+ db.deviceid(device_name_fan.getText().toString().trim(), room_name) + device_name_fan.getText().toString().trim()+"speed", MODE_PRIVATE);
-                                    seekBar_fan.setProgress(sharedPref_fan_speed.getInt("speed",0));
-                                }
-                            })
-                                {
-                                    @Override
-                                    protected Map<String, String> getParams() throws AuthFailureError {
-                                    Map<String, String> map = new HashMap<>();
-                                    map.put("device_name", device_name_fan.getText().toString());
-                                    map.put("device_type", "fan");
-                                    map.put("status","off");
-                                    map.put("room_name",room_name);
-                                    map.put("device_id",db.deviceid(device_name_fan.getText().toString().trim(),room_name));
-                                    map.put("speed", String.valueOf(seekBar.getProgress()));
-                                    return map;
-                                }
-                                };
-                            RequestQueue requestQueue=Volley.newRequestQueue(context);
-                            requestQueue.add(stringRequest);
-                        }
+                        volley.volleyseekbar(context,room_name,switch_fan.isChecked(),device_name_fan.getText().toString().trim(),device_type_fan.getText().toString().trim(),seekBar.getProgress());
                     }
                     else {
                         Toast.makeText(context, "check internet connection", Toast.LENGTH_SHORT).show();
@@ -500,7 +456,6 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
             InternetConnection internetConnection=new InternetConnection();
             boolean b=internetConnection.checkConnection(context);
             if(b==true) {
-                Server volley=new Server();
                 volley.volleytoggle(context,room_name,isChecked,device_name_fan.getText().toString().trim(),device_type_fan.getText().toString().trim());
             }
             else {
