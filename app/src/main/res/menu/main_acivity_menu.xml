@@ -5,13 +5,6 @@
         android:icon="@drawable/ic_setting"
         android:title="Setting"
         app:showAsAction="ifRoom"/>
-    <item android:id="@+id/about"
-        android:title="About US"
-        app:showAsAction="never" />
-    <item android:id="@+id/feedback"
-        android:title="Feedback to App"
-        app:showAsAction="never" />
-    <item android:id="@+id/privacy_policy"
-        android:title="Privacy Policy"
-        app:showAsAction="never" />
+
+
 </menu>

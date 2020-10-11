@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.home_automation.adapter.Device_RecyclerViewadapter;
 import com.example.home_automation.database.device_list_DML;
 import com.example.home_automation.ip.IPAddressValidation;
+import com.example.home_automation.server.Server;
 
 import java.util.ArrayList;
 
@@ -38,6 +39,7 @@ public class Device extends AppCompatActivity implements View.OnClickListener {
 
     ArrayList<String> arrayList_device_name;
     ArrayList<String> arrayList_device_type;
+    ArrayList arrayList_on_devices;
 
     String devicetype1;
     String room_name;
@@ -50,6 +52,8 @@ public class Device extends AppCompatActivity implements View.OnClickListener {
         fb = findViewById(R.id.fb);
         rcv = findViewById(R.id.rcv);
 
+
+
         db = new device_list_DML(Device.this);
 
         intent = getIntent();
@@ -57,14 +61,20 @@ public class Device extends AppCompatActivity implements View.OnClickListener {
 
         arrayList_device_name = new ArrayList<>();
         arrayList_device_type = new ArrayList<>();
+        arrayList_on_devices=new ArrayList();
 
         arrayList_device_name = db.view_DeviceName(room_name);
         arrayList_device_type = db.view_DeviceType(room_name);
 
 
+
         if (arrayList_device_name.isEmpty()) {
             Toast.makeText(this, "Please Add Device To Continue", Toast.LENGTH_SHORT).show();
         }
+
+        Server server=new Server();
+
+        server.checkingstate(room_name,Device.this);
 
         init();
 
@@ -165,7 +175,7 @@ public class Device extends AppCompatActivity implements View.OnClickListener {
     private void init() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(Device.this, LinearLayoutManager.VERTICAL, false);
         rcv.setLayoutManager(linearLayoutManager);
-        Device_RecyclerViewadapter adapter = new Device_RecyclerViewadapter(arrayList_device_name, arrayList_device_type, Device.this, room_name);
+        Device_RecyclerViewadapter adapter = new Device_RecyclerViewadapter(arrayList_device_name, arrayList_device_type, Device.this, room_name,arrayList_on_devices);
         rcv.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
@@ -319,5 +329,10 @@ public class Device extends AppCompatActivity implements View.OnClickListener {
         {
             adddevicedialog();
         }
+    }
+
+    public void arr(ArrayList<String> arrayList) {
+        arrayList_on_devices=arrayList;
+        init();
     }
 }

@@ -1,11 +1,9 @@
 package com.example.home_automation;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -31,7 +29,7 @@ import com.example.home_automation.ip.IPAddressValidation;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class WifiMainActivity extends AppCompatActivity implements View.OnClickListener {
     EditText room_name;
     Button add, cancel;
     ImageView fb;
@@ -43,8 +41,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     RecyclerView.Adapter adapter;
     RecyclerView.LayoutManager mgr;
 
-    device_list_DML dbdevice=new device_list_DML(MainActivity.this);
-    room_list_DML db = new room_list_DML(MainActivity.this);
+
+    device_list_DML dbdevice=new device_list_DML(WifiMainActivity.this);
+    room_list_DML db = new room_list_DML(WifiMainActivity.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     void addroomdialog() {
-        final Dialog dialog = new Dialog(MainActivity.this);
+        final Dialog dialog = new Dialog(WifiMainActivity.this);
         dialog.setContentView(R.layout.add_room);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
@@ -89,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 else {
                     if (mNames.contains(room)) {
-                        Toast.makeText(MainActivity.this, "Room name:" + room + " already exists.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(WifiMainActivity.this, "Room name:" + room + " already exists.", Toast.LENGTH_SHORT).show();
                     } else {
                         db.save_room_name(room);
                         mNames.add(room);
@@ -109,16 +108,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     void init(){
-        mgr = new LinearLayoutManager(MainActivity.this);
+        mgr = new LinearLayoutManager(WifiMainActivity.this);
         rcv.setLayoutManager(mgr);
-        adapter = new Room_Adapter(MainActivity.this, mNames);
+        adapter = new Room_Adapter(WifiMainActivity.this, mNames);
         rcv.setAdapter(adapter);
     }
 
 
     public void dialog(final String room)
     {
-                    final Dialog dialog=new Dialog(MainActivity.this);
+                    final Dialog dialog=new Dialog(WifiMainActivity.this);
                     dialog.setContentView(R.layout.delete_update);
                     dialog.getWindow().setLayout(RecyclerView.LayoutParams.WRAP_CONTENT, RecyclerView.LayoutParams.WRAP_CONTENT);
                     dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -131,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     update.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            final Dialog dialog1=new Dialog(MainActivity.this);
+                            final Dialog dialog1=new Dialog(WifiMainActivity.this);
                             dialog1.setContentView(R.layout.update_room_name);
                             dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                             dialog1.show();
@@ -153,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     }
                                     else {
                                     if (mNames.contains(room_name.getText().toString())) {
-                                        Toast.makeText(MainActivity.this, "Room name:" + room1 + " already exists.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(WifiMainActivity.this, "Room name:" + room1 + " already exists.", Toast.LENGTH_SHORT).show();
                                     }
                                     else {
                                         db.update_room_name(room, room_name.getText().toString());
@@ -179,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     delete.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText(MainActivity.this, "delete", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(WifiMainActivity.this, "delete", Toast.LENGTH_SHORT).show();
                             db.delete_room_name(room);
                             dbdevice.deleteallforaroom(room);
                             mNames.remove(room);
@@ -202,21 +201,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.shetting:
                 dialogsetting();
                 break;
-            case R.id.about:
-                startActivity(new Intent(MainActivity.this,About.class));
-                break;
-            case R.id.privacy_policy:
-                startActivity(new Intent(MainActivity.this,Privacy_Policy.class));
-                break;
-            case R.id.feedback:
-                Intent intent = new Intent(Intent.ACTION_SENDTO).setData(new Uri.Builder().scheme("mailto").build()).putExtra(Intent.EXTRA_EMAIL, new String[]{ "Info@Slogfy.com" });
-                startActivity(intent);
         }
         return true;
     }
 
     private void dialogsetting() {
-        final Dialog dialog = new Dialog(MainActivity.this);
+        final Dialog dialog = new Dialog(WifiMainActivity.this);
         dialog.setContentView(R.layout.ip_dialog);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
@@ -238,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String connectedip=getWifiIP();
                 if(connectedip.trim().equals("0.0.0.0"))
                 {
-                    Toast.makeText(MainActivity.this, "No devices connected via wifi", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(WifiMainActivity.this, "No devices connected via wifi", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     ip.setText(connectedip);
@@ -256,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     editor.commit();
                     dialog.dismiss();
                 } else {
-                    Toast.makeText(MainActivity.this, "Not a valid ip address", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(WifiMainActivity.this, "Not a valid ip address", Toast.LENGTH_SHORT).show();
                 }
             }
         });

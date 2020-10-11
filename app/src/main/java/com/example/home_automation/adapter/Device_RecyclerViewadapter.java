@@ -36,16 +36,19 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
 
     private ArrayList<String> mDeviceName ;
     private ArrayList<String> mDeviceType;
+    private ArrayList<String> mOnDeviceName;
     private OnRecyclerViewListner mOnRecyclerViewListner;
     Context context;
     String room_name;
     Server volley=new Server();
+    ArrayList arrayList=new ArrayList();
 
-    public Device_RecyclerViewadapter(ArrayList<String> devicename , ArrayList<String> devicetype, Context context,String room_name){
+    public Device_RecyclerViewadapter(ArrayList<String> devicename , ArrayList<String> devicetype, Context context,String room_name,ArrayList ondevices){
         this.mDeviceName = devicename;
         this.mDeviceType = devicetype;
         this.context=context;
         this.room_name=room_name;
+        this.mOnDeviceName=ondevices;
         Log.d(TAG, "Device_RecyclerViewadapter constructor is called");
     }
 
@@ -96,13 +99,15 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        final device_list_DML db=new device_list_DML(context);
         switch (getItemViewType(i)){
             case DEVICE_TYPE_LIGHT:
                 Log.d(TAG,"onBindViewHolder: LIGHT is called "+viewHolder.getItemViewType());
                 LightViewHolder lightViewHolder =(LightViewHolder) viewHolder;
                 lightViewHolder.add_data_light(mDeviceName.get(i),mDeviceType.get(i));
                 String light_name=((LightViewHolder) viewHolder).device_name_light.getText().toString().trim();
+                if(mOnDeviceName.contains(light_name)){
+                    ((LightViewHolder) viewHolder).switch_light.setChecked(true);
+                }
                 break;
 
             case DEVICE_TYPE_FAN:
@@ -110,6 +115,9 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                 FanViewHolder fanViewHolder = (FanViewHolder) viewHolder;
                 fanViewHolder.add_data_fan(mDeviceName.get(i),mDeviceType.get(i));
                 String fan_name=((FanViewHolder) viewHolder).device_name_fan.getText().toString().trim();
+                if(mOnDeviceName.contains(fan_name)){
+                    ((FanViewHolder) viewHolder).switch_fan.setChecked(true);
+                }
                 break;
 
             case DEVICE_TYPE_SOCKET:
@@ -117,6 +125,9 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                 SocketViewHolder socketViewHolder = (SocketViewHolder) viewHolder;
                 socketViewHolder.add_data_socket(mDeviceName.get(i),mDeviceType.get(i));
                 String socket_name=((SocketViewHolder) viewHolder).device_name_socket.getText().toString().trim();
+                if(mOnDeviceName.contains(socket_name)){
+                    ((SocketViewHolder) viewHolder).switch_socket.setChecked(true);
+                }
                 break;
 
             case DEVICE_TYPE_COLOR_LIGHT:
@@ -124,6 +135,9 @@ public class Device_RecyclerViewadapter extends RecyclerView.Adapter<RecyclerVie
                 ColorLightViewHolder colorlightViewHolder =(ColorLightViewHolder) viewHolder;
                 colorlightViewHolder.add_data_color_light(mDeviceName.get(i),mDeviceType.get(i));
                 String color_light_name=((ColorLightViewHolder) viewHolder).device_name_color_light.getText().toString().trim();
+                if(mOnDeviceName.contains(color_light_name)){
+                    ((ColorLightViewHolder) viewHolder).switch_color_light.setChecked(true);
+                }
                 break;
             default:
         }

@@ -20,33 +20,38 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@drawable/gradient"
+            android:padding="4dp">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
+                android:fontFamily="monospace"
                 android:text="ADD NEW DEVICE"
                 android:textAlignment="center"
-                android:textSize="25dp"
-                android:textStyle="bold"
                 android:textColor="#fff"
-                />
+                android:textSize="20dp"
+                android:textStyle="bold" />
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#fff"
                 android:textColorHint="#fff"
                 android:layout_marginTop="10dp">
-            <EditText
-            android:id="@+id/device_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Device Name"
-                android:textColorHint="#fff"
-                android:textColor="#fff"
-                android:backgroundTint="#fff"/>
+
+                <EditText
+                    android:id="@+id/device_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#fff"
+                    android:ems="10"
+                    android:fontFamily="monospace"
+                    android:hint="Device Name"
+                    android:textColor="#fff"
+                    android:textColorHint="#fff" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -55,15 +60,17 @@
                 android:textColor="#fff"
                 android:textColorHint="#fff"
                 android:layout_marginTop="10dp">
-        <EditText
-            android:id="@+id/deviceid"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Device id"
-            android:textColorHint="#fff"
-            android:textColor="#fff"
-            android:backgroundTint="#fff"/>
+
+                <EditText
+                    android:id="@+id/deviceid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#fff"
+                    android:ems="10"
+                    android:fontFamily="monospace"
+                    android:hint="Device id"
+                    android:textColor="#fff"
+                    android:textColorHint="#fff" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -78,28 +85,31 @@
                     android:textColorHint="#fff"
                     android:layout_marginTop="10dp"
                     android:layout_weight="1">
+
                     <EditText
                         android:id="@+id/ipaddress"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:backgroundTint="#fff"
                         android:ems="10"
-                        android:hint="ipaddress"
-                        android:textColorHint="#fff"
+                        android:fontFamily="monospace"
+                        android:hint="IP Address"
                         android:textColor="#fff"
-                        android:backgroundTint="#fff"/>
+                        android:textColorHint="#fff" />
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <Button
                     android:id="@+id/getip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:layout_weight="0.5"
+                    android:background="@drawable/button"
+                    android:fontFamily="monospace"
                     android:text="GET IP FROM CONNECTED DEVICE"
                     android:textAlignment="center"
-                    android:textSize="10dp"
                     android:textColor="#fff"
-                    android:layout_weight="0.5"
-                    android:layout_marginRight="3dp"
-                    android:background="@drawable/button"
-                    />
+                    android:textSize="10dp" />
             </LinearLayout>
         <Spinner
             android:id="@+id/device_type"
@@ -113,35 +123,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-          <Button
-            android:id="@+id/save"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="save"
-            android:background="@drawable/button"
-            android:textColor="#fff"
-            android:layout_weight="1"
-             android:layout_marginLeft="2dp"
-             android:layout_marginRight="3dp"
-             android:layout_alignParentBottom="true"
-             android:layout_centerHorizontal="true"
-             android:layout_marginBottom="10dp"
-             android:textSize="20dp"
-            />
-        <Button
-            android:id="@+id/cancel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="cancel"
-            android:textColor="#fff"
-            android:layout_weight="1"
-            android:background="@drawable/button"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="3dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
-            android:textSize="20dp"/>
+
+            <Button
+                android:id="@+id/save"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="3dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/button"
+                android:fontFamily="monospace"
+                android:text="save"
+                android:textColor="#fff"
+                android:textSize="20dp" />
+
+            <Button
+                android:id="@+id/cancel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="3dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/button"
+                android:fontFamily="monospace"
+                android:text="cancel"
+                android:textColor="#fff"
+                android:textSize="20dp" />
         </LinearLayout>
         </LinearLayout>
 

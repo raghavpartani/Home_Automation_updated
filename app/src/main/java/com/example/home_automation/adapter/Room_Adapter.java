@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.home_automation.Device;
-import com.example.home_automation.MainActivity;
+import com.example.home_automation.WifiMainActivity;
 import com.example.home_automation.R;
 import com.example.home_automation.database.room_list_DML;
 
@@ -78,7 +78,7 @@ public class Room_Adapter
             v.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    ((MainActivity)context).dialog(tv.getText().toString());
+                    ((WifiMainActivity)context).dialog(tv.getText().toString());
                   return true;
                 }
             });

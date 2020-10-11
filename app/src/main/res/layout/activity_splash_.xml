@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Home Automation"
+            android:text="Slog IOT"
             android:textAlignment="center"
             android:textColor="#fff"
             android:textSize="20dp"
@@ -46,7 +46,6 @@
             android:textStyle="bold"
             />
     </LinearLayout>
-
 
     <LinearLayout
         android:layout_width="match_parent"
